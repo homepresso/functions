@@ -45,7 +45,7 @@ namespace Andys.Function
 
 
             var response = new MessagingResponse()
-                .Message($"Your SMS and response has been received. {formValues["Body"]}");
+                .Message($"You have selected the following action: {formValues["Body"]}");
             var twiml = response.ToString();
             twiml = twiml.Replace("utf-16", "utf-8");
             var smsBody = formValues["Body"];
