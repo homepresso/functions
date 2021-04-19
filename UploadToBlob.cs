@@ -12,7 +12,7 @@ namespace Andys.Function
 {
     public static class UploadToBlob
     {
-        [FunctionName("UploadToBlob")]
+        [FunctionName("UploadFile")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
