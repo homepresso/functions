@@ -1,35 +1,59 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using Amazon.S3;
+using Amazon.S3.Transfer;
+using Amazon.Runtime;
+using Amazon.S3.Model;
 
 namespace functions
 {
     public static class S3CreateBucket
     {
         [FunctionName("S3CreateBucket")]
-        public static async Task<IActionResult> Run(
+        public static async Task<String> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            var bucketName = req.Query["bucketName"];
+            var access = req.Headers["access"];
+            var secret = req.Headers["secret"];
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+            {
+                var credentials = new BasicAWSCredentials(access, secret);
+                var config = new AmazonS3Config
 
-            return new OkObjectResult(responseMessage);
+                {
+                    RegionEndpoint = Amazon.RegionEndpoint.USWest2
+                };
+                using var client = new AmazonS3Client(credentials, config);
+                try
+                {
+                    PutBucketRequest request = new PutBucketRequest();
+                    request.BucketName = bucketName;
+                    client.PutBucketAsync(request);
+                }
+                catch (AmazonS3Exception amazonS3Exception)
+                {
+                    if (amazonS3Exception.ErrorCode != null && (amazonS3Exception.ErrorCode.Equals("InvalidAccessKeyId") || amazonS3Exception.ErrorCode.Equals("InvalidSecurity")))
+                    {
+                        Console.WriteLine("Incorrect AWS Credentials.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: ", amazonS3Exception.ErrorCode, amazonS3Exception.Message);
+                    }
+                }
+            }
+
+
+            return bucketName;
         }
     }
 }
