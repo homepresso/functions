@@ -1,35 +1,66 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon.S3.Transfer;
+using Amazon;
+using Amazon.Runtime;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Andys.Function
 {
-    public static class HttpTriggerCSharp1
+    public static class S3Upload
     {
-        [FunctionName("HttpTriggerCSharp1")]
-        public static async Task<IActionResult> Run(
+        [FunctionName("S3Upload")]
+        public static async Task<String> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            var file = req.Form.Files["file"];
+            var region = req.Query["region"];
+            var bucket = req.Query["bucket"];
+            var access = req.Headers["access"];
+            var secret = req.Headers["secret"];
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This1 HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
-
-            return new OkObjectResult(responseMessage);
+            return UploadS3File(bucket, region, access, secret, file).Result;
         }
+        public static async Task<String> UploadS3File(string bucket, string region, string access, string secret, IFormFile file)
+        {
+
+            var credentials = new BasicAWSCredentials(access, secret);
+            var config = new AmazonS3Config
+
+            {
+                RegionEndpoint = Amazon.RegionEndpoint.USWest2
+            };
+            using var client = new AmazonS3Client(credentials, config);
+            await using var newMemoryStream = new MemoryStream();
+            file.CopyTo(newMemoryStream);
+
+            var uploadRequest = new TransferUtilityUploadRequest
+            {
+                InputStream = newMemoryStream,
+                Key = file.FileName,
+                BucketName = bucket,
+                CannedACL = S3CannedACL.PublicRead
+            };
+
+            var fileTransferUtility = new TransferUtility(client);
+            await fileTransferUtility.UploadAsync(uploadRequest);
+
+            return uploadRequest.Key;
+        }
+
     }
+
+   
 }
+   
+
