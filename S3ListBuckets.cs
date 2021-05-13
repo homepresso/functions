@@ -22,7 +22,7 @@ namespace functions
             ILogger log)
         {
 
-
+            var region = req.Query["region"];
             string access = req.Headers["access"];
             string secret = req.Headers["secret"];
 

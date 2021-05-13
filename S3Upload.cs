@@ -26,11 +26,12 @@ namespace Andys.Function
             var bucket = req.Query["bucket"];
             var access = req.Headers["access"];
             var secret = req.Headers["secret"];
+            var filename = req.Query["filename"];
 
 
-            return UploadS3File(bucket, region, access, secret, file).Result;
+            return UploadS3File(bucket, region, access, secret, file, filename).Result;
         }
-        public static async Task<String> UploadS3File(string bucket, string region, string access, string secret, IFormFile file)
+        public static async Task<String> UploadS3File(string bucket, string region, string access, string secret, IFormFile file, string filename)
         {
 
             var credentials = new BasicAWSCredentials(access, secret);
@@ -46,7 +47,7 @@ namespace Andys.Function
             var uploadRequest = new TransferUtilityUploadRequest
             {
                 InputStream = newMemoryStream,
-                Key = file.FileName,
+                Key = filename,
                 BucketName = bucket,
                 CannedACL = S3CannedACL.PublicRead
             };

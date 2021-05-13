@@ -7,29 +7,49 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Amazon.Runtime;
+using Amazon.S3;
+using Amazon.S3.Model;
+using System.Collections.Generic;
 
 namespace functions
 {
     public static class S3ListFiles
     {
         [FunctionName("S3ListFiles")]
-        public static async Task<IActionResult> Run(
+        public static async Task<String> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            string bucketName = req.Query["bucketName"];
+            var folder = req.Query["folder"];
+            var access = req.Headers["access"];
+            var secret = req.Headers["secret"];
+            var region = req.Query["region"];
+            var Prefix = req.Headers["prefix"];
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            List<string> filenames = new List<string>();
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+            var credentials = new BasicAWSCredentials(access, secret);
+            var config = new AmazonS3Config
 
-            return new OkObjectResult(responseMessage);
+
+            {
+                RegionEndpoint = Amazon.RegionEndpoint.USWest2
+            };
+            using var client = new AmazonS3Client(credentials, config);
+
+            ListObjectsRequest request = new ListObjectsRequest();
+            request.BucketName = bucketName;
+            ListObjectsResponse response = await client.ListObjectsAsync(request);
+            foreach (S3Object o in response.S3Objects)
+            {
+                Console.WriteLine("{0}\t{1}\t{2}", o.Key, o.Size, o.LastModified);
+            }
+
+            return null;
         }
     }
 }

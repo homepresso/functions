@@ -23,7 +23,7 @@ namespace functions
             var secret = req.Headers["secret"];
             var bodycontent = req.Form["bodycontent"];
             var key = req.Query["key"];
-
+            var region = req.Query["region"];
 
 
 

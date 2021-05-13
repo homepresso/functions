@@ -23,7 +23,7 @@ namespace functions
             var bucketName = req.Query["bucketName"];
             var access = req.Headers["access"];
             var secret = req.Headers["secret"];
-
+            var region = req.Query["region"];
 
             {
                 var credentials = new BasicAWSCredentials(access, secret);
