@@ -6,11 +6,9 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Amazon.S3;
-using Amazon.S3.Model;
 using Amazon.S3.Transfer;
-using Amazon;
 using Amazon.Runtime;
-using Microsoft.AspNetCore.Mvc;
+
 
 namespace Andys.Function
 {
