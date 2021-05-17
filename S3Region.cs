@@ -7,29 +7,67 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Amazon.Runtime;
+using Amazon.S3;
+using Amazon.S3.Model;
+using Amazon;
 
-namespace functions
+namespace andys.function
 {
     public static class S3Region
     {
-        [FunctionName("S3Region")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
-            ILogger log)
+
+        public static async Task<RegionEndpoint> getAWSRegion(string region)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            
+            switch (region)
+            {
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+                case "USWest2":
+                    { return Amazon.RegionEndpoint.USWest2; }
+                case "USWest1":
+                    { return Amazon.RegionEndpoint.USWest1; }
+                case "USEast1":
+                    { return Amazon.RegionEndpoint.USEast1; }
+                case "USEast2":
+                    { return Amazon.RegionEndpoint.USEast2; }
+                case "MESouth1":
+                    { return Amazon.RegionEndpoint.MESouth1; }
+                case "SAEast1":
+                    { return Amazon.RegionEndpoint.SAEast1; }
+                case "USGovCloudEast1":
+                    { return Amazon.RegionEndpoint.USGovCloudEast1; }
+                case "USGovCloudWest1":
+                    { return Amazon.RegionEndpoint.USGovCloudWest1; }
+                case "AFSouth1":
+                    { return Amazon.RegionEndpoint.AFSouth1; }
+                case "APEast1":
+                    { return Amazon.RegionEndpoint.APEast1; }
+                case "APNortheast1":
+                    { return Amazon.RegionEndpoint.APNortheast1; }
+                case "APNortheast2":
+                    { return Amazon.RegionEndpoint.APNortheast2; }
+                case "APNortheast3":
+                    { return Amazon.RegionEndpoint.APNortheast3; }
+                case "APSouth1":
+                    { return Amazon.RegionEndpoint.APSouth1; }
+                case "APSoutheast1":
+                    { return Amazon.RegionEndpoint.APSoutheast1; }
+                case "APSoutheast2":
+                    { return Amazon.RegionEndpoint.APSoutheast2; }
+                case "CACentral1":
+                    { return Amazon.RegionEndpoint.CACentral1; }
+                case "CNNorth1":
+                    { return Amazon.RegionEndpoint.CNNorth1; }
+                case "CNNorthWest1":
+                    { return Amazon.RegionEndpoint.CNNorthWest1; }
+                case "EUCentral1":
+                    { return Amazon.RegionEndpoint.EUCentral1; }
+            }
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
 
-            return new OkObjectResult(responseMessage);
+            return null;
         }
     }
 }
