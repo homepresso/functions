@@ -54,7 +54,6 @@ namespace Andys.Function
                 }
             }
 
-
             return bucketName;
         }
     }

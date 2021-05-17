@@ -17,7 +17,7 @@ namespace functions
     {
         [FunctionName("S3CreateFolder")]
         public static async Task<String> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
 
