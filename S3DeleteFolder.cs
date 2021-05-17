@@ -7,29 +7,37 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Amazon.S3;
+using Amazon.Runtime;
+using Amazon.S3.Model;
+using System.Collections.Generic;
+using Andys.Function;
 
-namespace functions
+namespace Andys.Function
 {
     public static class S3DeleteFolder
     {
         [FunctionName("S3DeleteFolder")]
-        public static async Task<IActionResult> Run(
+        public static async Task<String> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            var bucketName = req.Query["bucketName"];
+            var access = req.Headers["access"];
+            var secret = req.Headers["secret"];
+            var region = req.Query["region"];
+            var folderPath = req.Query["folderPath"];
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            var credentials = new BasicAWSCredentials(access, secret);
+            var config = new AmazonS3Config
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+            {
+                RegionEndpoint = andys.function.S3Region.getAWSRegion(region)
+            };
 
-            return new OkObjectResult(responseMessage);
+
+            return null;
         }
     }
 }
