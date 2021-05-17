@@ -30,7 +30,7 @@ namespace Andys.Function
                 var config = new AmazonS3Config
 
                 {
-                    RegionEndpoint = await andys.function.S3Region.getAWSRegion(region)
+                    RegionEndpoint = andys.function.S3Region.getAWSRegion(region)
                 };
                 using var client = new AmazonS3Client(credentials, config);
                 try

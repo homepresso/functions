@@ -40,7 +40,7 @@ namespace Andys.Function
 
 
             {
-                RegionEndpoint = await andys.function.S3Region.getAWSRegion(region)
+                RegionEndpoint = andys.function.S3Region.getAWSRegion(region)
             };
             using var client = new AmazonS3Client(credentials, config);
             await using var newMemoryStream = new MemoryStream();

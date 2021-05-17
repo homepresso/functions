@@ -7,29 +7,63 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Amazon.S3.Model;
+using Amazon.Runtime;
+using Amazon.S3;
 
 namespace functions
 {
     public static class S3CreateFolder
     {
         [FunctionName("S3CreateFolder")]
-        public static async Task<IActionResult> Run(
+        public static async Task<String> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+            var bucketName = req.Query["bucketName"];
+            var access = req.Headers["access"];
+            var secret = req.Headers["secret"];
+            var region = req.Query["region"];
+            var folderName = req.Query["folderName"];
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            {
+                var credentials = new BasicAWSCredentials(access, secret);
+                var config = new AmazonS3Config
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+                {
+                    RegionEndpoint = andys.function.S3Region.getAWSRegion(region)
+                };
 
-            return new OkObjectResult(responseMessage);
+                using var client = new AmazonS3Client(credentials, config);
+
+                try
+                {
+                    PutObjectRequest request = new PutObjectRequest()
+                    {
+                        BucketName = bucketName,
+                        Key = folderName
+                    };
+                    PutObjectResponse response = await client.PutObjectAsync(request);
+                }
+
+                catch (AmazonS3Exception amazonS3Exception)
+                {
+                    if (amazonS3Exception.ErrorCode != null && (amazonS3Exception.ErrorCode.Equals("InvalidAccessKeyId") || amazonS3Exception.ErrorCode.Equals("InvalidSecurity")))
+                    {
+                        Console.WriteLine("Incorrect AWS Credentials.");
+                        return ("Incorrect AWS Credentials.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error: ", amazonS3Exception.ErrorCode, amazonS3Exception.Message);
+                        return ("Error: ", amazonS3Exception.ErrorCode, amazonS3Exception.Message).ToString();
+                    }
+                }
+                
+                return folderName;
+
+            }
         }
     }
 }

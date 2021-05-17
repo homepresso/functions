@@ -17,7 +17,7 @@ namespace andys.function
     public static class S3Region
     {
 
-        public static async Task<RegionEndpoint> getAWSRegion(string region)
+        public static RegionEndpoint getAWSRegion(string region)
         {
 
 
@@ -76,7 +76,7 @@ namespace andys.function
                     { return Amazon.RegionEndpoint.EUWest3; }
 
             }
-                    return null;
+            return null;
         }
     }
 }
