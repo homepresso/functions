@@ -20,7 +20,7 @@ namespace andys.function
         public static async Task<RegionEndpoint> getAWSRegion(string region)
         {
 
-            
+
             switch (region)
             {
 
@@ -64,10 +64,19 @@ namespace andys.function
                     { return Amazon.RegionEndpoint.CNNorthWest1; }
                 case "EUCentral1":
                     { return Amazon.RegionEndpoint.EUCentral1; }
+                case "EUNorth1":
+                    { return Amazon.RegionEndpoint.EUNorth1; }
+                case "EUSouth1":
+                    { return Amazon.RegionEndpoint.EUSouth1; }
+                case "EUWest1":
+                    { return Amazon.RegionEndpoint.EUWest1; }
+                case "EUWest2":
+                    { return Amazon.RegionEndpoint.EUWest2; }
+                case "EUWest3":
+                    { return Amazon.RegionEndpoint.EUWest3; }
+
             }
-
-
-            return null;
+                    return null;
         }
     }
 }
