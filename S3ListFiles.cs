@@ -12,44 +12,61 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using System.Collections.Generic;
 
-namespace functions
+namespace Andys.Function
 {
     public static class S3ListFiles
     {
         [FunctionName("S3ListFiles")]
-        public static async Task<String> Run(
+        public static async Task<List<s3mod>> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string bucketName = req.Query["bucketName"];
-            var folder = req.Query["folder"];
+            var bucketName = req.Query["bucketName"];
             var access = req.Headers["access"];
             var secret = req.Headers["secret"];
             var region = req.Query["region"];
-            var Prefix = req.Headers["prefix"];
 
-            List<string> filenames = new List<string>();
+            List<s3mod> filenames = new List<s3mod>();
 
             var credentials = new BasicAWSCredentials(access, secret);
             var config = new AmazonS3Config
 
-
             {
                 RegionEndpoint = Amazon.RegionEndpoint.USWest2
             };
-            using var client = new AmazonS3Client(credentials, config);
 
-            ListObjectsRequest request = new ListObjectsRequest();
-            request.BucketName = bucketName;
-            ListObjectsResponse response = await client.ListObjectsAsync(request);
-            foreach (S3Object o in response.S3Objects)
+            try
             {
-                Console.WriteLine("{0}\t{1}\t{2}", o.Key, o.Size, o.LastModified);
+                using var client = new AmazonS3Client(credentials, config);
+
+                ListObjectsRequest request = new ListObjectsRequest();
+                request.BucketName = bucketName;
+                ListObjectsResponse response = await client.ListObjectsAsync(request);
+                foreach (S3Object o in response.S3Objects)
+                {
+                    filenames.Add(new s3mod() { name = "File Name", value = o.Key });
+                }
+
             }
 
-            return null;
+            catch (AmazonS3Exception amazonS3Exception)
+            {
+                if (amazonS3Exception.ErrorCode != null && (amazonS3Exception.ErrorCode.Equals("InvalidAccessKeyId") || amazonS3Exception.ErrorCode.Equals("InvalidSecurity")))
+                {
+                    Console.WriteLine("Incorrect AWS Credentials.");
+                    filenames.Add(new s3mod() { name = "Error", value = "Incorrect AWS Credentials" });
+                }
+                else
+                {
+                    Console.WriteLine("Error: ", amazonS3Exception.ErrorCode, amazonS3Exception.Message);
+                    filenames.Add(new s3mod() { name = amazonS3Exception.ErrorCode, value = amazonS3Exception.Message });
+                }
+
+
+            }
+
+            return filenames;
         }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using System;
-namespace functions
+namespace Andys.Function
 {
-    public class s3models
+    public class s3mod
     {
-        public s3models()
-        {
-        }
+        public string name { get; set; }
+        public string value { get; set; }
     }
 }

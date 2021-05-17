@@ -10,7 +10,7 @@ using Amazon.S3.Transfer;
 using Amazon.Runtime;
 using Amazon.S3.Model;
 
-namespace functions
+namespace Andys.Function
 {
     public static class S3CreateBucket
     {
@@ -37,17 +37,19 @@ namespace functions
                 {
                     PutBucketRequest request = new PutBucketRequest();
                     request.BucketName = bucketName;
-                    client.PutBucketAsync(request);
+                    await client.PutBucketAsync(request);
                 }
                 catch (AmazonS3Exception amazonS3Exception)
                 {
                     if (amazonS3Exception.ErrorCode != null && (amazonS3Exception.ErrorCode.Equals("InvalidAccessKeyId") || amazonS3Exception.ErrorCode.Equals("InvalidSecurity")))
                     {
                         Console.WriteLine("Incorrect AWS Credentials.");
+                        return ("Incorrect AWS Credentials.");
                     }
                     else
                     {
                         Console.WriteLine("Error: ", amazonS3Exception.ErrorCode, amazonS3Exception.Message);
+                        return ("Error: ", amazonS3Exception.ErrorCode, amazonS3Exception.Message).ToString(); 
                     }
                 }
             }
