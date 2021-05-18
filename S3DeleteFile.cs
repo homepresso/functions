@@ -42,10 +42,29 @@ namespace Andys.Function
                 Key = filePath
             };
 
-            using var client = new AmazonS3Client(credentials, config);
-            DeleteObjectResponse fileDeleteResponse = await client.DeleteObjectAsync(deleteFileRequest);
+            try
+            {
+                using var client = new AmazonS3Client(credentials, config);
+                DeleteObjectResponse fileDeleteResponse = await client.DeleteObjectAsync(deleteFileRequest);
+            }
 
-            return fileDeleteResponse.HttpStatusCode.ToString();
+            catch (AmazonS3Exception amazonS3Exception)
+            {
+                if (amazonS3Exception.ErrorCode != null && (amazonS3Exception.ErrorCode.Equals("InvalidAccessKeyId") || amazonS3Exception.ErrorCode.Equals("InvalidSecurity")))
+                {
+                    return("Incorrect AWS Credentials.");
+                   
+                }
+                else
+                {
+                    return("Error: ", amazonS3Exception.ErrorCode, amazonS3Exception.Message).ToString();
+                    
+                }
+                
+            }
+
+            return (filePath + "Deleted");
+            
         }
     }
 }

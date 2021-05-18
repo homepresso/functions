@@ -36,8 +36,34 @@ namespace Andys.Function
                 RegionEndpoint = andys.function.S3Region.getAWSRegion(region)
             };
 
+           
+            var deleteFolderRequest = new DeleteObjectRequest
+            {
+                BucketName = bucketName,
+                Key = folderPath
+            };
 
-            return null;
+            try
+            {
+                using var client = new AmazonS3Client(credentials, config);
+                DeleteObjectResponse folderDeleteResponse = await client.DeleteObjectAsync(deleteFolderRequest);
+            }
+            catch (AmazonS3Exception amazonS3Exception)
+            {
+                if (amazonS3Exception.ErrorCode != null && (amazonS3Exception.ErrorCode.Equals("InvalidAccessKeyId") || amazonS3Exception.ErrorCode.Equals("InvalidSecurity")))
+                {
+                    return ("Incorrect AWS Credentials.");
+
+                }
+                else
+                {
+                    return ("Error: ", amazonS3Exception.ErrorCode, amazonS3Exception.Message).ToString();
+
+                }
+
+            }
+
+            return folderPath;
         }
     }
 }
