@@ -35,34 +35,52 @@ namespace Andys.Function
         public static async Task<String> UploadS3File(string bucket, string region, string access, string secret, IFormFile file, string filename)
         {
 
-            var credentials = new BasicAWSCredentials(access, secret);
-            var config = new AmazonS3Config
 
-
+            try
             {
-                RegionEndpoint = andys.function.S3Region.getAWSRegion(region)
-            };
-            using var client = new AmazonS3Client(credentials, config);
-            await using var newMemoryStream = new MemoryStream();
-            file.CopyTo(newMemoryStream);
 
-            var uploadRequest = new TransferUtilityUploadRequest
+                var credentials = new BasicAWSCredentials(access, secret);
+                var config = new AmazonS3Config
+
+
+                {
+                    RegionEndpoint = andys.function.S3Region.getAWSRegion(region)
+                };
+                using var client = new AmazonS3Client(credentials, config);
+                await using var newMemoryStream = new MemoryStream();
+                file.CopyTo(newMemoryStream);
+
+                var uploadRequest = new TransferUtilityUploadRequest
+                {
+                    InputStream = newMemoryStream,
+                    Key = filename,
+                    BucketName = bucket,
+                    CannedACL = S3CannedACL.PublicRead
+                };
+
+                var fileTransferUtility = new TransferUtility(client);
+                await fileTransferUtility.UploadAsync(uploadRequest);
+
+            }
+            catch (AmazonS3Exception amazonS3Exception)
             {
-                InputStream = newMemoryStream,
-                Key = filename,
-                BucketName = bucket,
-                CannedACL = S3CannedACL.PublicRead
-            };
+                if (amazonS3Exception.ErrorCode != null && (amazonS3Exception.ErrorCode.Equals("InvalidAccessKeyId") || amazonS3Exception.ErrorCode.Equals("InvalidSecurity")))
+                {
+                    Console.WriteLine("Incorrect AWS Credentials.");
+                    return ("Incorrect AWS Credentials.");
+                }
+                else
+                {
+                    Console.WriteLine("Error: ", amazonS3Exception.ErrorCode, amazonS3Exception.Message);
+                    return ("Error: ", amazonS3Exception.ErrorCode, amazonS3Exception.Message).ToString();
+                }
+            }
 
-            var fileTransferUtility = new TransferUtility(client);
-            await fileTransferUtility.UploadAsync(uploadRequest);
-
-            return uploadRequest.Key;
+            return filename;
         }
 
     }
 
-   
 }
    
 
