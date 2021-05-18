@@ -46,8 +46,9 @@ namespace Andys.Function
             // Create a PutObject request
             PutObjectRequest request = new PutObjectRequest
             {
-                BucketName = bucketName,
+                BucketName = "nintexna",
                 Key = "Item1",
+                ContentType = "text/plain",
                 ContentBody = "This is sample content..."
             };
 
