@@ -7,6 +7,9 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Amazon.Runtime;
+using Amazon.S3;
+using Amazon.S3.Model;
 
 namespace Andys.Function
 {
@@ -14,24 +17,50 @@ namespace Andys.Function
     {
         [FunctionName("S3CreateObject")]
         public static async Task<String> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous,"post", Route = null)] HttpRequest req,
             ILogger log)
         {
 
             var bucketName = req.Query["bucketName"];
             var access = req.Headers["access"];
             var secret = req.Headers["secret"];
-            var bodycontent = req.Form["bodycontent"];
             var key = req.Query["key"];
             var region = req.Query["region"];
+            var contentBody = req.Form["contentBody"];
+
+            Console.WriteLine(contentBody);
+            Console.WriteLine("g");
+
+            var credentials = new BasicAWSCredentials(access, secret);
+            var config = new AmazonS3Config
+
+
+
+            {
+                RegionEndpoint = andys.function.S3Region.getAWSRegion(region)
+            };
+
+           
+                using var client = new AmazonS3Client(credentials, config);
+
+            // Create a PutObject request
+            PutObjectRequest request = new PutObjectRequest
+            {
+                BucketName = bucketName,
+                Key = "Item1",
+                ContentBody = "This is sample content..."
+            };
+
+            // Put object
+            PutObjectResponse response = await client.PutObjectAsync(request);
 
 
 
 
 
 
-
-            return "NA";
+            return contentBody.ToString();
         }
+
     }
 }
