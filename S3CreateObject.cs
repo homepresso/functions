@@ -26,41 +26,51 @@ namespace Andys.Function
             var secret = req.Headers["secret"];
             var key = req.Query["key"];
             var region = req.Query["region"];
-            var contentBody = req.Form["contentBody"];
+            var contentBody = req.Body;
 
-            Console.WriteLine(contentBody);
-            Console.WriteLine("g");
+
 
             var credentials = new BasicAWSCredentials(access, secret);
             var config = new AmazonS3Config
-
-
 
             {
                 RegionEndpoint = andys.function.S3Region.getAWSRegion(region)
             };
 
-           
+            try
+            {
+
                 using var client = new AmazonS3Client(credentials, config);
 
-            // Create a PutObject request
-            PutObjectRequest request = new PutObjectRequest
+
+                PutObjectRequest request = new PutObjectRequest();
+                request.BucketName = bucketName;
+                request.Key = key;
+                request.ContentType = "text/plain";
+                request.ContentBody = contentBody.ToString();
+                await client.PutObjectAsync(request);
+
+            }
+
+            catch (AmazonS3Exception amazonS3Exception)
             {
-                BucketName = "nintexna",
-                Key = "Item1",
-                ContentType = "text/plain",
-                ContentBody = "This is sample content..."
-            };
+                if (amazonS3Exception.ErrorCode != null && (amazonS3Exception.ErrorCode.Equals("InvalidAccessKeyId") || amazonS3Exception.ErrorCode.Equals("InvalidSecurity")))
+                {
+                    return ("Incorrect AWS Credentials.");
+                    
 
-            // Put object
-            PutObjectResponse response = await client.PutObjectAsync(request);
+                }
+                else
+                {
+                    return ("Error: ", amazonS3Exception.ErrorCode, amazonS3Exception.Message).ToString();
+
+                }
+
+            }
 
 
 
-
-
-
-            return contentBody.ToString();
+            return key;
         }
 
     }
