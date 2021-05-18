@@ -18,11 +18,10 @@ namespace Andys.Function
     public static class S3GetObject
     {
         [FunctionName("S3GetObject")]
-        public static async Task<IActionResult> Run(
+        public static async Task<MemoryStream> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-
 
             var bucketName = req.Query["bucketName"];
             var access = req.Headers["access"];
@@ -35,7 +34,6 @@ namespace Andys.Function
             var credentials = new BasicAWSCredentials(access, secret);
             var config = new AmazonS3Config
 
-
             {
                 RegionEndpoint = andys.function.S3Region.getAWSRegion(region)
             };
@@ -47,27 +45,16 @@ namespace Andys.Function
             };
             using var client = new AmazonS3Client(credentials, config);
 
-            using (GetObjectResponse response = await client.GetObjectAsync(request))
+
+            using (var getObjectResponse = await client.GetObjectAsync(request))
             {
-                using (StreamReader reader = new StreamReader(response.ResponseStream))
+                using (var responseStream = getObjectResponse.ResponseStream)
                 {
-                    string contents = reader.ReadToEnd();
-                    Console.WriteLine("Object - " + response.Key);
-                    Console.WriteLine(" Version Id - " + response.VersionId);
-                    Console.WriteLine(" Contents - " + contents);
-
-                    byte[] filebytes = Encoding.UTF8.GetBytes(contents);
-
-                    return new FileContentResult(filebytes, "application/octet-stream")
-                    {
-                        FileDownloadName = key
-
-                    };
-
+                    var stream = new MemoryStream();
+                    await responseStream.CopyToAsync(stream);
+                    stream.Position = 0;
+                    return stream;
                 }
-
-
-
             }
         }
     }
