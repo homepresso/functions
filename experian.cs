@@ -26,7 +26,7 @@ namespace Andys.Function
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigg1er f request.");
+            log.LogInformation("C# HTTP trgdfgfddfgigg1er f request.");
 
             string name = req.Query["Businessname"];
             string city = req.Query["City"];
