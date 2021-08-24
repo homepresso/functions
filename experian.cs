@@ -26,7 +26,7 @@ namespace Andys.Function
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigg1er function gfdprocessed a request.");
+            log.LogInformation("C# HTTP trigg1er f request.");
 
             string name = req.Query["Businessname"];
             string city = req.Query["City"];
@@ -36,7 +36,7 @@ namespace Andys.Function
 
             {
 
-                TaxID = 0004323512,
+                TaxID = 0004321512,
                 ReliabilityRating = 71.4,
                 CurrentBankrupt = "No",
                 PreviousBankrupt = "No"
