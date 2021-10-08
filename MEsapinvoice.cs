@@ -48,60 +48,59 @@ namespace Andys.Function
 
 
         [FunctionName("MEsapinvoice")]
-        public static async Task<string> Run(
+        public static async Task<dynamic> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string name = req.Query["name"];
-            // var userName = "Nintex";
-            // var password = "Welcome1";
+            var userName = "Nintex";
+            var password = "Welcome1";
 
 
-    //             HttpClientHandler clientHandler = new HttpClientHandler();
-    //             clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+                HttpClientHandler clientHandler = new HttpClientHandler();
+                clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
 
-    //                     // Pass the handler to httpclient(from you are calling api)
-    // //        HttpClient client = new HttpClient(clientHandler)
-    //         var url = "https://34.201.227.223:44300/sap/opu/odata/sap/ZINVOICE_POST_SRV/InvoiceCreateSet?sap-client=599";
+
+            var url = "https://34.201.227.223:44300/sap/opu/odata/sap/ZINVOICE_POST_SRV/InvoiceCreateSet?sap-client=599";
             
             
-    //         using var client = new HttpClient(clientHandler);
-    //             var authToken = Encoding.ASCII.GetBytes($"{userName}:{password}");
-    //             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
-    //             Convert.ToBase64String(authToken));
+            using var client = new HttpClient(clientHandler);
+                var authToken = Encoding.ASCII.GetBytes($"{userName}:{password}");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
+                Convert.ToBase64String(authToken));
 
-    //         {
+            {
 
-    //             var response = await client.GetAsync(url);
-    //             client.DefaultRequestHeaders.Add("x-CSRF-token", "fetch");
+                var response = await client.GetAsync(url);
+                client.DefaultRequestHeaders.Add("x-CSRF-token", "fetch");
 
-    //         }
+            }
 
-    //         var result = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, url));
+            var result = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, url));
 
-    //         var csrftoken = result.Headers.GetValues("x-CSRF-token").FirstOrDefault();
+            var csrftoken = result.Headers.GetValues("x-CSRF-token").FirstOrDefault();
 
-    //         using var postClient = new HttpClient(clientHandler);
-
-    //   //      needs updating
-
-    //   string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-    //   dynamic data = JsonConvert.DeserializeObject(requestBody);
-
-    //             string jsondata = JsonConvert.SerializeObject(data);
-    //             StringContent bodydata = new StringContent(jsondata, Encoding.UTF8, "application/json");
-
-    //         {
-    //             var postresponse = await client.PostAsync(url, bodydata);
-    //             postClient.DefaultRequestHeaders.Add("X-CSRF-Token", csrftoken);
-
-    //         }
+            using var postClient = new HttpClient(clientHandler);
 
 
 
-return "works";
+      string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+      dynamic data = JsonConvert.DeserializeObject(requestBody);
+
+                string jsondata = JsonConvert.SerializeObject(data);
+                StringContent bodydata = new StringContent(jsondata, Encoding.UTF8, "application/json");
+
+            {
+                var postresponse = await client.PostAsync(url, bodydata);
+                postClient.DefaultRequestHeaders.Add("X-CSRF-Token", csrftoken);
+
+            }
+
+
+
+return postClient;
         }
     }
 }
