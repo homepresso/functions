@@ -87,7 +87,7 @@ namespace Andys.Function
 
             using var postClient = new HttpClient(clientHandler);
 
-      //      Root myclass = await JsonSerializer.DeserializeAsync<Root>(req.Body);
+      //      needs updating
 
       string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
       dynamic data = JsonConvert.DeserializeObject(requestBody);
@@ -101,7 +101,6 @@ namespace Andys.Function
 
             }
 
-            Console.WriteLine(bodydata.ToString());
 
 
 return postClient;
