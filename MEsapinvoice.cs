@@ -48,7 +48,7 @@ namespace Andys.Function
 
 
         [FunctionName("MEsapinvoice")]
-        public static async Task<dynamic> Run(
+        public static async Task<string> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
@@ -101,7 +101,7 @@ namespace Andys.Function
 
 
 
-return postClient;
+return "works";
         }
     }
 }
