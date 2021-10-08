@@ -56,7 +56,7 @@ namespace Andys.Function
 
             string name = req.Query["name"];
             var userName = "Nintex";
-            var passwd = "Welcome1";
+            var password = "Welcome1";
 
 
                 HttpClientHandler clientHandler = new HttpClientHandler();
@@ -68,7 +68,7 @@ namespace Andys.Function
             
             
             using var client = new HttpClient(clientHandler);
-                var authToken = Encoding.ASCII.GetBytes($"{userName}:{passwd}");
+                var authToken = Encoding.ASCII.GetBytes($"{userName}:{password}");
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
                 Convert.ToBase64String(authToken));
 
