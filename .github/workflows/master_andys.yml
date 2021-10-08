@@ -39,5 +39,5 @@ jobs:
         app-name: 'andys'
         slot-name: 'production'
         package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_c0286f76b70f469a93bff8dfba9c8207 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_9426068f9ece427a83a1f8ac48152027 }}
   
