@@ -81,8 +81,6 @@ namespace Andys.Function
 
             var result = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, url));
 
-            Console.WriteLine(result.Headers.GetValues("x-CSRF-token").FirstOrDefault());      
-
             var csrftoken = result.Headers.GetValues("x-CSRF-token").FirstOrDefault();
 
             using var postClient = new HttpClient(clientHandler);
