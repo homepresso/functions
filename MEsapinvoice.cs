@@ -48,8 +48,8 @@ namespace Andys.Function
 
 
         [FunctionName("MEsapinvoice")]
-        public static async Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpResponseMessage reqm, HttpRequest req, 
+        public static async Task<string> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req, 
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
@@ -71,23 +71,24 @@ namespace Andys.Function
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
                 Convert.ToBase64String(authToken));
 
-            {
+            
 
                 var response = await client.GetAsync(url);
                 client.DefaultRequestHeaders.Add("x-CSRF-token", "fetch");
 
-            }
+            
 
             var result = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, url));
 
             var csrftoken = result.Headers.GetValues("x-CSRF-token").FirstOrDefault();
+            Console.WriteLine(csrftoken);
 
-            using var postClient = new HttpClient(clientHandler);
+
   
 
 
       string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-      Console.WriteLine(requestBody);
+
 
     dynamic data = JsonConvert.DeserializeObject(requestBody);
 
@@ -96,17 +97,27 @@ namespace Andys.Function
 
 
 
-
-
-            {
-                var postresponse = await client.PostAsync(url, bodydata);
+            using var postClient = new HttpClient(clientHandler);
+            
+{
                 postClient.DefaultRequestHeaders.Add("X-CSRF-Token", csrftoken);
-
-            }
-
+                var postresponse = await postClient.PostAsync(url, bodydata);
 
 
-        return reqm;
+                string postresult = postresponse.Content.ReadAsStringAsync().Result;
+                Console.WriteLine(postresult);
+                // var resp = await response.Content.ReadAsStringAsync();      
+
+}
+
+
+
+            
+            
+
+
+
+        return "ok";
         }
     }
 }
