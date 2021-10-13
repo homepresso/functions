@@ -87,10 +87,16 @@ namespace Andys.Function
 
 
       string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-      dynamic data = JsonConvert.DeserializeObject(requestBody);
+      Console.WriteLine(requestBody);
 
-                string jsondata = JsonConvert.SerializeObject(data);
-                StringContent bodydata = new StringContent(jsondata, Encoding.UTF8, "application/json");
+    dynamic data = JsonConvert.DeserializeObject(requestBody);
+
+    string jsondata = JsonConvert.SerializeObject(data);
+    StringContent bodydata = new StringContent(jsondata, Encoding.UTF8, "application/json");
+
+
+
+
 
             {
                 var postresponse = await client.PostAsync(url, bodydata);
