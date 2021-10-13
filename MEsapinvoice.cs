@@ -48,8 +48,8 @@ namespace Andys.Function
 
 
         [FunctionName("MEsapinvoice")]
-        public static async Task<dynamic> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+        public static async Task<HttpResponseMessage> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpResponseMessage reqm, HttpRequest req, 
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
@@ -83,7 +83,7 @@ namespace Andys.Function
             var csrftoken = result.Headers.GetValues("x-CSRF-token").FirstOrDefault();
 
             using var postClient = new HttpClient(clientHandler);
-
+  
 
 
       string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -106,7 +106,7 @@ namespace Andys.Function
 
 
 
-return postClient;
+        return reqm;
         }
     }
 }
