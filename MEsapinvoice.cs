@@ -50,7 +50,7 @@ namespace Andys.Function
 
 
         [FunctionName("MEsapinvoice")]
-        public static async Task<string> Run(
+        public static async Task<dynamic> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req, 
             ILogger log)
         {
@@ -83,7 +83,7 @@ namespace Andys.Function
             var result = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, url));
 
             var csrftoken = result.Headers.GetValues("x-CSRF-token").FirstOrDefault();
-            Console.WriteLine(csrftoken);
+
 
 
   
@@ -101,26 +101,14 @@ namespace Andys.Function
 
             using var postClient = new HttpClient(clientHandler);
             
-{
+
                 postClient.DefaultRequestHeaders.Add("X-CSRF-Token", csrftoken);
+                postClient.DefaultRequestHeaders.Add("Accept", "application/json");
                 var postresponse = await postClient.PostAsync(url, bodydata);
 
-
                 string postresult = postresponse.Content.ReadAsStringAsync().Result;
-                Console.WriteLine(postresult);
-                // var resp = await response.Content.ReadAsStringAsync();      
 
-}
-
-
-
-
-            
-            
-
-
-
-        return "ok";
+        return postresponse.Content.ReadAsStringAsync().Result;
         }
     }
 }
