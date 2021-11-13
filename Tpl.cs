@@ -76,6 +76,134 @@ namespace Andys.Function
 
 
             });
+
+                        Products.Add(new Root{
+
+        ASIN = "B07RQ3NL76",
+        title = "Gaggia RI9380/46 Classic Pro Espresso Machine, Solid, Brushed Stainless Steel",
+        price = "$446.85",
+        listPrice = "",
+        imageUrl = "https://m.media-amazon.com/images/I/41FDt+X6kUL._SL160_.jpg",
+        detailPageURL = "https://www.amazon.com/dp/B07RQ3NL76",
+        rating = "4.6",
+        totalReviews = "1331",
+        subtitle = "Gaggia",
+        isPrimeEligible = "1",
+
+
+            });
+
+                        Products.Add(new Root{
+
+        ASIN = "B01G82WVZ0",
+        title = "Baratza Sette 270 Conical Burr Coffee Grinder",
+        price = "$399.95",
+        listPrice = "",
+        imageUrl =  "https://m.media-amazon.com/images/I/41leGjOtouL._SL160_.jpg",
+        detailPageURL =  "https://www.amazon.com/dp/B01G82WVZ0",
+        rating =  "4.4",
+        totalReviews = "405",
+        subtitle = "Baratza",
+        isPrimeEligible = "1"
+
+
+            });
+
+                        Products.Add(new Root{
+
+        ASIN = "B07RQ3NL76",
+        title = "Gaggia RI9380/46 Classic Pro Espresso Machine, Solid, Brushed Stainless Steel",
+        price = "$446.85",
+        listPrice = "",
+        imageUrl = "https://m.media-amazon.com/images/I/41FDt+X6kUL._SL160_.jpg",
+        detailPageURL = "https://www.amazon.com/dp/B07RQ3NL76",
+        rating = "4.6",
+        totalReviews = "1331",
+        subtitle = "Gaggia",
+        isPrimeEligible = "1",
+
+
+            });
+
+                        Products.Add(new Root{
+
+        ASIN = "B01G82WVZ0",
+        title = "Baratza Sette 270 Conical Burr Coffee Grinder",
+        price = "$399.95",
+        listPrice = "",
+        imageUrl =  "https://m.media-amazon.com/images/I/41leGjOtouL._SL160_.jpg",
+        detailPageURL =  "https://www.amazon.com/dp/B01G82WVZ0",
+        rating =  "4.4",
+        totalReviews = "405",
+        subtitle = "Baratza",
+        isPrimeEligible = "1"
+
+
+            });
+
+                        Products.Add(new Root{
+
+        ASIN = "B07RQ3NL76",
+        title = "Gaggia RI9380/46 Classic Pro Espresso Machine, Solid, Brushed Stainless Steel",
+        price = "$446.85",
+        listPrice = "",
+        imageUrl = "https://m.media-amazon.com/images/I/41FDt+X6kUL._SL160_.jpg",
+        detailPageURL = "https://www.amazon.com/dp/B07RQ3NL76",
+        rating = "4.6",
+        totalReviews = "1331",
+        subtitle = "Gaggia",
+        isPrimeEligible = "1",
+
+
+            });
+
+                        Products.Add(new Root{
+
+        ASIN = "B01G82WVZ0",
+        title = "Baratza Sette 270 Conical Burr Coffee Grinder",
+        price = "$399.95",
+        listPrice = "",
+        imageUrl =  "https://m.media-amazon.com/images/I/41leGjOtouL._SL160_.jpg",
+        detailPageURL =  "https://www.amazon.com/dp/B01G82WVZ0",
+        rating =  "4.4",
+        totalReviews = "405",
+        subtitle = "Baratza",
+        isPrimeEligible = "1"
+
+
+            });
+
+                        Products.Add(new Root{
+
+        ASIN = "B07RQ3NL76",
+        title = "Gaggia RI9380/46 Classic Pro Espresso Machine, Solid, Brushed Stainless Steel",
+        price = "$446.85",
+        listPrice = "",
+        imageUrl = "https://m.media-amazon.com/images/I/41FDt+X6kUL._SL160_.jpg",
+        detailPageURL = "https://www.amazon.com/dp/B07RQ3NL76",
+        rating = "4.6",
+        totalReviews = "1331",
+        subtitle = "Gaggia",
+        isPrimeEligible = "1",
+
+
+            });
+
+                        Products.Add(new Root{
+
+        ASIN = "B01G82WVZ0",
+        title = "Baratza Sette 270 Conical Burr Coffee Grinder",
+        price = "$399.95",
+        listPrice = "",
+        imageUrl =  "https://m.media-amazon.com/images/I/41leGjOtouL._SL160_.jpg",
+        detailPageURL =  "https://www.amazon.com/dp/B01G82WVZ0",
+        rating =  "4.4",
+        totalReviews = "405",
+        subtitle = "Baratza",
+        isPrimeEligible = "1"
+
+
+            });
             
         
 
